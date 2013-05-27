@@ -46,6 +46,7 @@ class CT_Posts_Widget extends WP_Widget {
 		$phead 	 = $instance['phead']; // Heading format 		
 		$ptype 	 = $instance['ptype']; // Post type 		
 		$pshow 	 = $instance['pshow']; // Number of Tweets
+		$plink	 = $instance['plink']; // Show posts link
 	
 		$beforetitle = '<'.$phead.'>';
 		$aftertitle = '</'.$phead.'>';
@@ -79,6 +80,8 @@ class CT_Posts_Widget extends WP_Widget {
 				
 			<?php wp_reset_query(); 
 			endwhile; ?>
+
+			<?php if ($plink == true) echo get_permalink( get_option('page_for_posts' ) ); ?>
 			
 			<?php endif; ?>		
 			
@@ -104,6 +107,7 @@ class CT_Posts_Widget extends WP_Widget {
 		$instance['phead'] = strip_tags( $new_instance['phead'] );
 		$instance['ptype'] = strip_tags( $new_instance['ptype'] );
 		$instance['pshow'] = strip_tags( $new_instance['pshow'] );
+		$instance['plink'] = strip_tags( $new_instance['plink'] );
 
 		return $instance;
 	}
@@ -121,12 +125,14 @@ class CT_Posts_Widget extends WP_Widget {
 			$phead = $instance[ 'phead' ];
 			$ptype = $instance[ 'ptype' ];
 			$pshow = $instance[ 'pshow' ];
+			$plink = $instance[ 'plink' ];
 		}
 		else {
 			$title = __( 'Blog', 'text_domain' );
 			$phead = __( 'h2', 'text_domain' );
 			$ptype = __( 'post', 'text_domain' );
 			$pshow = __( '2', 'text_domain' );
+			$plink = false;
 		}
 		?>
 		<p>
@@ -159,6 +165,11 @@ class CT_Posts_Widget extends WP_Widget {
 		<p>
 		<label for="<?php echo $this->get_field_id( 'pshow' ); ?>"><?php echo __( 'Number of posts to show' ); ?>
 			<input id="<?php echo $this->get_field_id( 'pshow' ); ?>" name="<?php echo $this->get_field_name( 'pshow' ); ?>" type="text" value="<?php echo esc_attr( $pshow ); ?>" size="2" />
+		</label>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id( 'plink' ); ?>"><?php echo __( 'Show link to all articles' ); ?>
+			<input id="<?php echo $this->get_field_id( 'plink' ); ?>" name="<?php echo $this->get_field_name( 'plink' ); ?>" type="checkbox" value="<?php echo esc_attr( $plink ); ?>" />
 		</label>
 		</p>
 		<?php 
