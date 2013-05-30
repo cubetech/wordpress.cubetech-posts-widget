@@ -42,17 +42,25 @@ class CT_Posts_Widget extends WP_Widget {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		// These are our own options
-		$title 	 = $instance['title']; // Widget title
-		$phead 	 = $instance['phead']; // Heading format 		
-		$ptype 	 = $instance['ptype']; // Post type 		
-		$pshow 	 = $instance['pshow']; // Number of Tweets
-		$plink	 = $instance['plink']; // Show posts link
+		$title 	 = $instance['title']; 	// Widget title
+		$phead 	 = $instance['phead']; 	// Heading format 		
+		$ptype 	 = $instance['ptype']; 	// Post type 		
+		$pcont 	 = $instance['pcont']; 	// Excerpt type 		
+		$elength = $instance['elength'];// Excerpt length 		
+		$pshow 	 = $instance['pshow']; 	// Number of Posts
+		$pmore	 = $instance['pmore']; 	// Show "more" link
+		$phr	 = $instance['phr']; 	// Show hr
+		$plink	 = $instance['plink']; 	// Show posts link
+		$ltitle  = $instance['ltitle'];	// Posts link title
 	
 		$beforetitle = '<'.$phead.'>';
 		$aftertitle = '</'.$phead.'>';
 		
 	    // Output
 		echo $before_widget;
+
+		echo '<div class="ct-widget-content">
+		';
 		
 			if ($title) echo $beforetitle . $title . $aftertitle; 
 			
@@ -70,22 +78,29 @@ class CT_Posts_Widget extends WP_Widget {
 	
 				<p class="post-date"><?php the_time("d.m.Y"); ?></p>
 		
-				<p><?php the_title(); ?></p>
+				<?php if ($pcont == 'title') : ?>
+					<p class="post-excerpt"><?php the_title(); ?></p>
+				<?php elseif ($pcont == 'excerpt') : ?>
+					<p class="post-excerpt"><a href="<?php the_permalink(); ?>" title="Show article"><?php echo substr(get_the_excerpt(), 0, $elength) . '...'; ?></a></p>
+				<?php endif; ?>
 				
-				<a href="<?php the_permalink(); ?>" rel="bookmark" title="Permanenter Link zu <?php the_title_attribute(); ?>" class="post-title">Weiterlesen</a>
+				<?php if ($pmore == true) : ?><a href="<?php the_permalink(); ?>" rel="bookmark" title="Permanenter Link zu <?php the_title_attribute(); ?>" class="post-title">Weiterlesen</a><?php endif; ?>
 				
-				<hr />
+				<?php if ($phr == true) : ?><hr /><?php endif; ?>
 				
 			<?php endif; ?>
 				
 			<?php wp_reset_query(); 
 			endwhile; ?>
 
-			<?php if ($plink == true) echo get_permalink( get_option('page_for_posts' ) ); ?>
+			</div>
+
+			<?php if ($plink == true) echo '<p class="more"><a href="' . get_permalink( get_option('page_for_posts' ) ) . '" title="' . $ltitle . '">' . $ltitle . '</a></p>'; ?>
 			
 			<?php endif; ?>		
 			
 		<?php
+
 		// echo widget closing tag
 		echo $after_widget;
 
@@ -106,8 +121,13 @@ class CT_Posts_Widget extends WP_Widget {
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		$instance['phead'] = strip_tags( $new_instance['phead'] );
 		$instance['ptype'] = strip_tags( $new_instance['ptype'] );
+		$instance['pcont'] = strip_tags( $new_instance['pcont'] );
+		$instance['elength'] = strip_tags( $new_instance['elength'] );
 		$instance['pshow'] = strip_tags( $new_instance['pshow'] );
+		$instance['pmore'] = strip_tags( $new_instance['pmore'] );
+		$instance['phr'] = strip_tags( $new_instance['phr'] );
 		$instance['plink'] = strip_tags( $new_instance['plink'] );
+		$instance['ltitle'] = strip_tags( $new_instance['ltitle'] );
 
 		return $instance;
 	}
@@ -124,15 +144,25 @@ class CT_Posts_Widget extends WP_Widget {
 			$title = $instance[ 'title' ];
 			$phead = $instance[ 'phead' ];
 			$ptype = $instance[ 'ptype' ];
+			$pcont = $instance[ 'pcont' ];
+			$elength = $instance[ 'elength' ];
 			$pshow = $instance[ 'pshow' ];
+			$pmore = $instance[ 'pmore' ];
+			$phr = $instance[ 'phr' ];
 			$plink = $instance[ 'plink' ];
+			$ltitle = $instance[ 'ltitle' ];
 		}
 		else {
 			$title = __( 'Blog', 'text_domain' );
 			$phead = __( 'h2', 'text_domain' );
 			$ptype = __( 'post', 'text_domain' );
+			$pcont = 'title';
+			$elength = 100;
 			$pshow = __( '2', 'text_domain' );
+			$phr = true;
+			$pmore = true;
 			$plink = false;
+			$ltitle = __( 'Show all articles', 'text_domain' );
 		}
 		?>
 		<p>
@@ -151,7 +181,7 @@ class CT_Posts_Widget extends WP_Widget {
 		</label>
 		</p>
 		<p>
-		<label for="<?php echo $this->get_field_id( 'ptype' ); ?>">
+		<label for="<?php echo $this->get_field_id( 'ptype' ); ?>"><?php echo __('Post type:'); ?><br />
 		<select name="<?php echo $this->get_field_name( 'ptype' ); ?>">
 			<option value=""> - <?php echo __( 'Select Post Type' ); ?> - </option>
 			<?php $args = array( 'public' => true );
@@ -163,15 +193,48 @@ class CT_Posts_Widget extends WP_Widget {
 		</label>
 		</p>
 		<p>
+		<label for="<?php echo $this->get_field_id( 'pcont' ); ?>"><?php echo __('Article content:'); ?><br />
+		<select name="<?php echo $this->get_field_name( 'pcont' ); ?>">
+			<option value=""> - <?php echo __( 'Select content type' ); ?> - </option>
+			<option value="title" <?php if ($pcont == 'title') { echo 'selected="selected"'; } ?>>Title</option>
+			<option value="excerpt" <?php if ($pcont == 'excerpt') { echo 'selected="selected"'; } ?>>Excerpt</option>
+		</select>
+		</label>
+		</p>
+		<?php if($pcont == 'excerpt') : ?>
+		<p>
+		<label for="<?php echo $this->get_field_id( 'elength' ); ?>"><?php echo __( 'Excerpt length' ); ?>
+			<input id="<?php echo $this->get_field_id( 'elength' ); ?>" name="<?php echo $this->get_field_name( 'elength' ); ?>" type="text" value="<?php echo esc_attr( $elength ); ?>" size="3" />
+		</label>
+		</p>
+		<?php endif; ?>
+		<p>
 		<label for="<?php echo $this->get_field_id( 'pshow' ); ?>"><?php echo __( 'Number of posts to show' ); ?>
 			<input id="<?php echo $this->get_field_id( 'pshow' ); ?>" name="<?php echo $this->get_field_name( 'pshow' ); ?>" type="text" value="<?php echo esc_attr( $pshow ); ?>" size="2" />
 		</label>
 		</p>
 		<p>
-		<label for="<?php echo $this->get_field_id( 'plink' ); ?>"><?php echo __( 'Show link to all articles' ); ?>
-			<input id="<?php echo $this->get_field_id( 'plink' ); ?>" name="<?php echo $this->get_field_name( 'plink' ); ?>" type="checkbox" value="<?php echo esc_attr( $plink ); ?>" />
+		<label for="<?php echo $this->get_field_id( 'pmore' ); ?>"><?php echo __( 'Show "more" link' ); ?>
+			<input id="<?php echo $this->get_field_id( 'pmore' ); ?>" name="<?php echo $this->get_field_name( 'pmore' ); ?>" type="checkbox" <?php if ($pmore == true) echo "checked "; ?>/>
 		</label>
 		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id( 'phr' ); ?>"><?php echo __( 'Show hr' ); ?>
+			<input id="<?php echo $this->get_field_id( 'phr' ); ?>" name="<?php echo $this->get_field_name( 'phr' ); ?>" type="checkbox" <?php if ($phr == true) echo "checked "; ?>/>
+		</label>
+		</p>
+		<p>
+		<label for="<?php echo $this->get_field_id( 'plink' ); ?>"><?php echo __( 'Show link to all articles' ); ?>
+			<input id="<?php echo $this->get_field_id( 'plink' ); ?>" name="<?php echo $this->get_field_name( 'plink' ); ?>" type="checkbox" <?php if ($plink == true) echo "checked "; ?>/>
+		</label>
+		</p>
+		<?php if($plink == true) : ?>
+		<p>
+		<label for="<?php echo $this->get_field_id( 'ltitle' ); ?>"><?php echo __( 'Link title' ); ?>
+			<input id="<?php echo $this->get_field_id( 'ltitle' ); ?>" name="<?php echo $this->get_field_name( 'ltitle' ); ?>" type="text" value="<?php echo esc_attr( $ltitle ); ?>" size="20" />
+		</label>
+		</p>
+		<?php endif; ?>
 		<?php 
 	}
 
