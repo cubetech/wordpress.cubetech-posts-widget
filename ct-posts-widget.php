@@ -75,19 +75,24 @@ class CT_Posts_Widget extends WP_Widget {
 				<p><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php echo get_the_post_thumbnail($pq->ID, 'medium'); ?></a></p>
 			
 			<?php else : ?>
+
+				<div class="post-entry">
 	
-				<p class="post-date"><?php the_time("d.m.Y"); ?></p>
+					<p class="post-date"><?php the_time("d.m.Y"); ?></p>
 		
-				<?php if ($pcont == 'title') : ?>
-					<p class="post-excerpt"><?php the_title(); ?></p>
-				<?php elseif ($pcont == 'excerpt') : ?>
-					<p class="post-excerpt"><a href="<?php the_permalink(); ?>" title="Show article"><?php echo substr(get_the_excerpt(), 0, $elength) . '...'; ?></a></p>
-				<?php endif; ?>
+					<?php if ($pcont == 'title' || $pcont == 'both') : ?>
+						<p class="post-title"><a href="<?php the_permalink(); ?>" title="Show article"><?php the_title(); ?></a></p>
+					<?php endif;
+						if ($pcont == 'excerpt' || $pcont == 'both') : ?>
+						<p class="post-excerpt"><a href="<?php the_permalink(); ?>" title="Show article"><?php echo substr(get_the_excerpt(), 0, $elength) . '...'; ?></a></p>
+					<?php endif; ?>
 				
-				<?php if ($pmore == true) : ?><a href="<?php the_permalink(); ?>" rel="bookmark" title="Permanenter Link zu <?php the_title_attribute(); ?>" class="post-title">Weiterlesen</a><?php endif; ?>
+					<?php if ($pmore == true) : ?><a href="<?php the_permalink(); ?>" rel="bookmark" title="Permanenter Link zu <?php the_title_attribute(); ?>" class="post-title">Weiterlesen</a><?php endif; ?>
 				
-				<?php if ($phr == true) : ?><hr /><?php endif; ?>
+					<?php if ($phr == true) : ?><hr /><?php endif; ?>
 				
+				</div>
+
 			<?php endif; ?>
 				
 			<?php wp_reset_query(); 
@@ -198,10 +203,11 @@ class CT_Posts_Widget extends WP_Widget {
 			<option value=""> - <?php echo __( 'Select content type' ); ?> - </option>
 			<option value="title" <?php if ($pcont == 'title') { echo 'selected="selected"'; } ?>>Title</option>
 			<option value="excerpt" <?php if ($pcont == 'excerpt') { echo 'selected="selected"'; } ?>>Excerpt</option>
+			<option value="both" <?php if ($pcont == 'both') { echo 'selected="selected"'; } ?>>Title & Excerpt</option>
 		</select>
 		</label>
 		</p>
-		<?php if($pcont == 'excerpt') : ?>
+		<?php if($pcont == 'excerpt' || $pcont == 'both') : ?>
 		<p>
 		<label for="<?php echo $this->get_field_id( 'elength' ); ?>"><?php echo __( 'Excerpt length' ); ?>
 			<input id="<?php echo $this->get_field_id( 'elength' ); ?>" name="<?php echo $this->get_field_name( 'elength' ); ?>" type="text" value="<?php echo esc_attr( $elength ); ?>" size="3" />
