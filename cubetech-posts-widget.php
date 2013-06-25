@@ -3,7 +3,7 @@
 Plugin Name: cubetech Posts Widget
 Plugin URI: http://www.cubetech.ch
 Description: A sidebar Widget for displaying the most recent posts of any post type.
-Version: 1.1.2
+Version: 1.1.3
 Author: cubetech GmbH
 Author URI: http://www.cubetech.ch
 Tags: custom, post, types, sidebar, widget, recent

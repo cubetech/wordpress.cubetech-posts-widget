@@ -4,7 +4,7 @@ Donate link: http://www.cubetech.ch
 Tags: widget, posts, cubetech, recent, custom, post, type, custom, customizable
 Requires at least: 3.0.1
 Tested up to: 3.5
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,12 @@ https://github.com/cubetech/wordpress.cubetech-posts-widget
 4. Widget used on a site
                                                                                                                                                                   
 == Changelog ==                                                                                                                                                   
+
+= 1.1.3 =
+* Added some screenshots
+
+= 1.1.2 =
+* wp.org release
                                                                                                                                                                   
 = 1.1.1 =
 * Added readme and screenshot
