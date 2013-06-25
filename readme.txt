@@ -47,6 +47,9 @@ https://github.com/cubetech/wordpress.cubetech-posts-widget
 == Screenshots ==                                                                                                                                                 
                                                                                                                                                                   
 1. Widget options
+2. Widget used on a site
+3. Widget used on a site
+4. Widget used on a site
                                                                                                                                                                   
 == Changelog ==                                                                                                                                                   
                                                                                                                                                                   
